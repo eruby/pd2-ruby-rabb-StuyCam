@@ -1,19 +1,51 @@
 import processing.video.*;
 
-// Step 2. Declare a Capture object
+ class Button {
+   String label;
+   int bX, bY, bH, bW, bR ;//where R is the radius of rounded edges
+   color buttonColor;
+   color bHighlight;
+   int bPress = 0;
+   
+   Button(String l , int x, int y, int w, int h, int r,
+   int c, int hl){
+       label = l;
+       bX = x;
+       bY = y;
+       bH = h;
+       bW = w;
+       bR = r;
+       buttonColor = color(c);
+       bHighlight = color(hl);        
+           }
+           
+  void makeButton(){
+   stroke(0,0,255);
+   fill(buttonColor);
+   rect(bX,bY,bW,bH,bR); 
+   
+   fill(0,0,255);
+   textAlign(CENTER);
+   text(label, bX, bY, bW, bH);
+  }
+  
+  boolean overButton(){
+   if (mouseX >= bX && mouseX <= bX + bW &&
+       mouseY >= bY && mouseY <= bY+ bH){
+        return true;
+       } 
+    return false;
+  }
+
+ }
 Capture video;
-String pix;
-int pixX, pixY, pixW, pixH;
-color pixColor;
-color pixHighlight;
-boolean pixOver = false;
-int ppress = 0;
+Button pix;
+color poColor;
 
-int scale;
-int rows, cols;
+int scale, rows, cols;
 
-void setup() {
-  size(600,300);
+void setup(){
+  size(600,340);
   background(0);
   
   scale = 8;
@@ -21,54 +53,37 @@ void setup() {
   rows = 240/scale;
   video = new Capture(this,320,240,30);
   video.start();
-    
-  colorMode(RGB);
-  pix = "Pixelate";
-  pixColor = color(255);
-  pixHighlight = color(128);
-  pixX = 420;
-  pixY = 120;
-  pixW = 50;
-  pixH = 25;
   
+  pix = new Button("Pixelate", 420,20,100, 50, 20, 255, 128);
+  poColor = pix.buttonColor;
 }
 
-
-void draw() {
-  update(mouseX, mouseY);
-  
+void draw(){
   if (video.available()) {
     video.read();
   }
   image(video,0,0);
   video.loadPixels();
- 
- if (pixOver){
-  fill(pixHighlight);
-   }
-  else{ 
-   fill(pixColor); 
-  }
-  stroke(0,0,255);
-  fill(pixColor);
-  rect(pixX, pixY, pixW, pixH, 10);
-  fill(0,0,255);
-  textAlign(CENTER);
-  text(pix,pixX, pixY, 50, 25);
   
-  if (ppress==1){
-   pixelate(); 
-  }
+ if (pix.overButton()){
+   pix.buttonColor = pix.bHighlight;
+ } else{
+  pix.buttonColor = poColor; }
+  
+  pix.makeButton();
+ 
+ if (pix.bPress ==1){
+   pixelate(); }
 }
-    
+ 
 void mousePressed(){
-  if (pixOver & (ppress == 1)){
-   ppress = 0; 
-  }
-  else if (pixOver){
-     ppress = ppress +1; 
+  if (pix.overButton() && (pix.bPress == 1)){
+    pix.bPress = 0;
+  } else{
+    pix.bPress = 1;
   }
 }
+
 void pixelate(){
   for(int a = 0; a < cols; a++){
     for (int b = 0; b < rows; b++){
@@ -82,20 +97,4 @@ void pixelate(){
     }
   }
 }
-
-void update(int x, int y){
- if (overPix(pixX, pixY, pixW, pixH)){
-   pixOver = true;
- }
- else {
-  pixOver = false; 
- }
-}
-
-boolean overPix(int x, int y, int w, int h){
-  if (mouseX >= x && mouseX <= x+w &&
-      mouseY >= y && mouseY <= y+h){
-       return true; 
-      }
-   return false;
-}
+ 
