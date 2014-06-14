@@ -8,6 +8,7 @@ void setup() {
   size(320,240);
   video = new Capture(this, width, height, 30);
   prevFrame = createImage(video.width,video.height,RGB);
+  video.start();
 }
 
 void draw() {
