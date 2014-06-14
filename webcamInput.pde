@@ -1,6 +1,5 @@
 import processing.video.*;
 
-// Step 2. Declare a Capture object
 Capture video;
 
 void setup() {
