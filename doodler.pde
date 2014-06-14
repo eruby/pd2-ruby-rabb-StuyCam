@@ -33,7 +33,7 @@ void draw() {
   color c = video.pixels[(width-1-midx) + midy*video.width];
 
   stroke(c);
-  strokeWeight(4);
+  strokeWeight(2);
   line(x,y,newx,newy);
 
   x = newx;
