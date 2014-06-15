@@ -27,7 +27,7 @@ import processing.video.*;
    
    fill(0,0,255);
    textAlign(CENTER);
-   text(label, bX, bY, bW, bH);
+   text(label, bX, bY+15,bW, bH);
   }
   
   boolean overButton(){
@@ -141,22 +141,25 @@ void setup(){
   prevFrame = createImage(video.width,video.height,RGB);
   video.start();
   background(0);
+    
+  pointScroll =new Scrollbar(220,400,90,10,16);
+  pixScroll = new Scrollbar(10,320,90,10,16);
   
+  post = new Button("Posterize", 115,260,90,50,20,255,128);
+  neg = new Button("Negative",115,340,90,50,20,255,128 );
+  bwhite = new Button("Etch-A-Sketch",115,420,90,50,20,255,128);
   
-  pointScroll =new Scrollbar(210,400,100,10,16);
-  pixScroll = new Scrollbar(5,330,100,10,16);
-  post = new Button("Posterize", 115,260,95,50,20,255,128);
-  neg = new Button("Negative",115,330,95,50,20,255,128 );
-  bwhite = new Button("Etch-A-Sketch",115,400,95,50,20,255,128);
-  Gray = new Button("GrayScale", 215, 420, 95,50,20,255,128);
-  Bug = new Button("Bugs Eye View", 215,330 ,95,50,20,255,128); 
-  doodler = new Button("Doodle Machine",215,260,95,50,20,255,128);
-  motion = new Button("Motion Detector",10,420,95,50,20,255,128);
-  flashLight = new Button("Flashlight",10, 350, 95, 50,20, 255, 128);
-  pix = new Button("Pixelate", 10,260,95, 50, 20, 255, 128);
+  Gray = new Button("GrayScale", 220, 420, 90,50,20,255,128);
+  Bug = new Button("Bugs Eye View", 220,340 ,90,50,20,255,128); 
+  doodler = new Button("Doodle Machine",220,260,90,50,20,255,128);
+ 
+  motion = new Button("Motion Detector",10,420,90,50,20,255,128);
+  flashLight = new Button("Flashlight",10, 340, 90, 50,20, 255, 128);
+  pix = new Button("Pixelate", 10,260,90, 50, 20, 255, 128);
 }
 
 void draw(){
+  noStroke();
   if (video.available()) {
     prevFrame.copy(video,0,0,video.width,video.height,0,0,video.width,video.height);
     prevFrame.updatePixels();
