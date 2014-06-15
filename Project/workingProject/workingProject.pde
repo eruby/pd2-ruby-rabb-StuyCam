@@ -46,7 +46,67 @@ import processing.video.*;
   }
  }
  
- 
+ //code adapted from processing.org for class Scrollbar
+ class Scrollbar {
+  int bwidth, bheight;    // width and height of bar
+  float xpos, ypos;       // x and y position of bar
+  float spos, newspos;    // x position of slider
+  float sposMin, sposMax; // max and min values of slider
+  int loose;              // how loose/heavy
+  boolean over;           // is the mouse over the slider?
+  boolean locked;
+  float ratio;
+
+  Scrollbar (float xp, float yp, int bw, int bh, int l) {
+    bwidth = bw;
+    bheight = bh;
+    int widthtoheight = bw - bh;
+    ratio = (float)bw / (float)widthtoheight;
+    xpos = xp;
+    ypos = yp-bheight/2;
+    spos = xpos + bwidth/2 - bheight/2;
+    newspos = spos;
+    sposMin = xpos;
+    sposMax = xpos + bwidth - bheight;
+    loose = l;
+  }
+   void update() {
+    if (overEvent()) 
+      over = true;
+    else 
+      over = false;
+    if (mousePressed && over) 
+      locked = true;
+    if (!mousePressed) 
+      locked = false;
+    if (locked) 
+      newspos = constrain(mouseX-bheight/2, sposMin, sposMax);
+    if (abs(newspos - spos) > 1) 
+      spos = spos + (newspos-spos)/loose;
+  }
+
+  float constrain(float val, float minv, float maxv) {return min(max(val, minv), maxv);}
+
+  boolean overEvent() {
+    if (mouseX > xpos && mouseX < xpos+bwidth &&
+       mouseY > ypos && mouseY < ypos+bheight) 
+      return true;
+    return false;
+  }
+
+  void display() {
+    stroke(0,0,225);
+    fill(255,51,51);
+    rect(xpos, ypos, bwidth, bheight);
+    if (over || locked) {
+      fill(0, 0, 255);
+    } else {
+      fill(0,0,51);
+    }
+    rect(spos, ypos, bheight, bheight);
+  }
+  float getPos() {return spos * ratio;}
+}
  
 Capture video;
 PImage prevFrame;
@@ -58,6 +118,9 @@ Button doodler;
 Button Gray;
 Button Bug;
 
+Scrollbar pixScroll;
+Scrollbar pointScroll;
+
 int scale, rows, cols;
 int pointillize = 8;
 int pcols,prows;
@@ -65,26 +128,24 @@ float threshold = 50;
 float x,y;
 
 void setup(){
-  size(320,470);
+  size(320,500);
   smooth();
   
   x = 320/2;
   y = 240/2;
   scale = 8;
-  pcols = 320/pointillize;
-  prows = 240/pointillize;
-  cols = 320/scale;
-  rows = 240/scale;
   video = new Capture(this,320,240,30);
   prevFrame = createImage(video.width,video.height,RGB);
   video.start();
   background(0);
   
-  Gray = new Button("GrayScale", 210, 400, 100,50,20,255,128);
+  pointScroll =new Scrollbar(210,400,100,10,16);
+  pixScroll = new Scrollbar(10,330,100,10,16);
+  Gray = new Button("GrayScale", 210, 420, 100,50,20,255,128);
   Bug = new Button("Bugs Eye View", 210,330 ,100,50,20,255,128); 
   doodler = new Button("Doodle Machine",210,260,100,50,20,255,128);
-  motion = new Button("Motion Detector",10,400,100,50,20,255,128);
-  flashLight = new Button("Flashlight",10, 330, 100, 50,20, 255, 128);
+  motion = new Button("Motion Detector",10,420,100,50,20,255,128);
+  flashLight = new Button("Flashlight",10, 350, 100, 50,20, 255, 128);
   pix = new Button("Pixelate", 10,260,100, 50, 20, 255, 128);
 }
 
@@ -98,6 +159,13 @@ void draw(){
   loadPixels();
   video.loadPixels();
   prevFrame.loadPixels();
+  
+  pointScroll.update();
+  pointScroll.display();
+  changePoint();
+  pixScroll.update();
+  pixScroll.display();
+  changeScale();
   
   pix.highLight();
   pix.makeButton();
@@ -156,6 +224,17 @@ void mousePressed(){
    Gray.bPress = 0; 
   } else if (Gray.overButton()){
    Gray.bPress = 1; }
+}
+
+void changeScale(){
+  scale = (int)((pixScroll.spos + 50.00)/10);
+  cols = 320/scale;
+  rows = 240/scale;
+}
+void changePoint(){
+  pointillize = (int)((pointScroll.spos-210 +50)/10.00);
+  pcols = 320/pointillize;
+  prows = 240/pointillize;
 }
 
 void pixelate(){
