@@ -44,8 +44,10 @@ import processing.video.*;
      } else{
     buttonColor = oColor; }
   }
-
  }
+ 
+ 
+ 
 Capture video;
 PImage prevFrame;
 
@@ -56,8 +58,6 @@ Button doodler;
 Button Gray;
 Button Bug;
 
-int grayScaler = 2;
-int grows, gcols;
 int scale, rows, cols;
 int pointillize = 8;
 int pcols,prows;
@@ -73,8 +73,6 @@ void setup(){
   scale = 8;
   pcols = 320/pointillize;
   prows = 240/pointillize;
-  gcols = 320/grayScaler;
-  grows = 240/ grayScaler;
   cols = 320/scale;
   rows = 240/scale;
   video = new Capture(this,320,240,30);
@@ -267,23 +265,5 @@ void point(){
 }
 
 void grayer(){
-  smooth();
-  for (int i = 0; i < gcols ; i++) {
-    for (int j = 0; j < grows; j++) {
-
-      int x = i*grayScaler;
-      int y = j*grayScaler;
-
-      int loc = (video.width - i - 1) + j*video.width;
-
-      color c = video.pixels[loc];
-
-      float sz = (brightness(c)/255.0)*grayScaler; 
-      rectMode(CENTER);
-      fill(255);
-      noStroke();
-      rect(x + grayScaler/2,y + grayScaler/2,sz,sz);
-
-    }
-  }
+  filter(GRAY);
 }
