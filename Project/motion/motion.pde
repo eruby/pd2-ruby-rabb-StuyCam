@@ -52,12 +52,12 @@ float threshold = 50;
 Button motion;
 
 void setup() {
-  size(600, 300);
+  size(320, 600);
   video = new Capture(this, 320, 240, 30);
   prevFrame = createImage(320,240,RGB);
   video.start();
   
-  motion = new Button("motion detector",420,20,100,50,20,255,128);
+  motion = new Button("motion detector",20, 300,100,50,20,255,128);
 }
 
 void draw() {
@@ -79,8 +79,6 @@ void draw() {
 
    if (motion.bPress ==1){
    motionD(); 
-   video.updatePixels();
-   prevFrame.updatePixels();
    }
 }
 void mousePressed(){
@@ -113,6 +111,6 @@ void motionD(){
       }
     }
   }
- // video.updatePixels();
+  updatePixels();
  // prevFrame.updatePixels();
 }
