@@ -111,6 +111,9 @@ import processing.video.*;
 Capture video;
 PImage prevFrame;
 
+Button bwhite;
+Button neg;
+Button post;
 Button pix;
 Button flashLight;
 Button motion;
@@ -139,14 +142,18 @@ void setup(){
   video.start();
   background(0);
   
+  
   pointScroll =new Scrollbar(210,400,100,10,16);
-  pixScroll = new Scrollbar(10,330,100,10,16);
-  Gray = new Button("GrayScale", 210, 420, 100,50,20,255,128);
-  Bug = new Button("Bugs Eye View", 210,330 ,100,50,20,255,128); 
-  doodler = new Button("Doodle Machine",210,260,100,50,20,255,128);
-  motion = new Button("Motion Detector",10,420,100,50,20,255,128);
-  flashLight = new Button("Flashlight",10, 350, 100, 50,20, 255, 128);
-  pix = new Button("Pixelate", 10,260,100, 50, 20, 255, 128);
+  pixScroll = new Scrollbar(5,330,100,10,16);
+  post = new Button("Posterize", 115,260,95,50,20,255,128);
+  neg = new Button("Negative",115,330,95,50,20,255,128 );
+  bwhite = new Button("Etch-A-Sketch",115,400,95,50,20,255,128);
+  Gray = new Button("GrayScale", 215, 420, 95,50,20,255,128);
+  Bug = new Button("Bugs Eye View", 215,330 ,95,50,20,255,128); 
+  doodler = new Button("Doodle Machine",215,260,95,50,20,255,128);
+  motion = new Button("Motion Detector",10,420,95,50,20,255,128);
+  flashLight = new Button("Flashlight",10, 350, 95, 50,20, 255, 128);
+  pix = new Button("Pixelate", 10,260,95, 50, 20, 255, 128);
 }
 
 void draw(){
@@ -179,24 +186,32 @@ void draw(){
   Bug.makeButton();
   Gray.highLight();
   Gray.makeButton();
- 
+  neg.highLight();
+  neg.makeButton();
+  post.highLight();
+  post.makeButton();
+  bwhite.highLight();
+  bwhite.makeButton();
  
  if (pix.bPress ==1){
-   pixelate(); }
- if (flashLight.bPress == 1){
-   flash(); }
- if (motion.bPress ==1){
+   pixelate(); 
+ } if (flashLight.bPress == 1){
+   flash(); 
+ } if (motion.bPress ==1){
    motionD(); 
-   }
- if (doodler.bPress ==1){
+ } if (doodler.bPress ==1){
    doodle(); 
-   }
- if (Gray.bPress ==1){
+ } if (Gray.bPress ==1){
    grayer(); 
-   }
- if (Bug.bPress ==1){
+ } if (Bug.bPress ==1){
    point(); 
-   }
+ } if (post.bPress == 1){
+   poster();
+ }if (neg.bPress == 1){
+   negative();
+ }if (bwhite.bPress == 1){
+   etcher();
+ }
 }
  
 void mousePressed(){
@@ -223,7 +238,20 @@ void mousePressed(){
   } else if (Gray.overButton() && (Gray.bPress == 1)){
    Gray.bPress = 0; 
   } else if (Gray.overButton()){
-   Gray.bPress = 1; }
+   Gray.bPress = 1; 
+ }  else if (neg.overButton() && (neg.bPress == 1)){
+   neg.bPress = 0; 
+  } else if (neg.overButton()){
+   neg.bPress = 1; 
+  }  else if (bwhite.overButton() && (bwhite.bPress == 1)){
+   bwhite.bPress = 0; 
+  } else if (bwhite.overButton()){
+   bwhite.bPress = 1; 
+  }  else if (post.overButton() && (post.bPress == 1)){
+   post.bPress = 0; 
+  } else if (post.overButton()){
+   post.bPress = 1; 
+  }
 }
 
 void changeScale(){
@@ -342,7 +370,15 @@ void point(){
     }
    }
 }
-
+void negative(){
+  video.filter(INVERT);
+}
+void etcher(){
+  video.filter(THRESHOLD);
+}
+void poster(){
+ video.filter(POSTERIZE, 4); 
+}
 void grayer(){
-  filter(GRAY);
+  video.filter(GRAY);
 }
