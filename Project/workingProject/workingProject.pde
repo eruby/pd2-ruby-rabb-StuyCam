@@ -215,6 +215,7 @@ void draw(){
  }if (bwhite.bPress == 1){
    etcher();
  }
+ saveFrame("clip-#######.tif");
 }
  
 void mousePressed(){
